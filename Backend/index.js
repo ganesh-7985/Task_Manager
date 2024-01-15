@@ -29,7 +29,7 @@ app.post("/todo",async (req, res) => {
 
 app.get("/getTasks", (req, res) => {
     const getTask = Tasks.find({})
-    res.json({
+    res.send({
         getTask
     })
 })
