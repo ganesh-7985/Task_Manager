@@ -1,17 +1,24 @@
 const express = require("express");
 const app = express();
 app.use(express.json());
-const { Tasks } = require("./database/db")
+const { Tasks } = require("./database/db");
+const { createTodo, updateTodo } = require("./types");
 
-app.post("/newTask", (req, res) => {
-    const title = req.headers.title;
-    const description = req.headers.description;
-    const deadline = req.headers.deadline;
+app.post("/todo",async (req, res) => {
+    const createpayload = req.body;
+    const parsedpayload = createTodo.safeParse(createpayload);
 
-    Tasks.create({
-        title: title,
-        description: description,
-        deadline: deadline
+    if(!parsedpayload.success){
+        res.status(411).json({
+            msg:"Wrong inputs are sent"
+        })
+        return;
+    }
+    await Tasks.create({
+        title:createpayload.title,
+        description:createpayload.description,
+        completed:false
+       
     })
     res.json({
         msg: "New Task added successfully"
@@ -27,21 +34,25 @@ app.get("/getTasks", (req, res) => {
     })
 })
 
-app.put("/updateTask", (req, res) => {
-    const title = req.headers.title;
-    Tasks.findOneAndUpdate({
-        title
-    },)
+app.put("/updateTask", async(req, res) => {
+   const updatePayload = req.body;
+   const parsedpayload = updateTodo.safeParse(updatePayload);
 
+   if(!parsedpayload.success){
+    res.status(411).json({
+        msg:'wrong inputs'
+    })
+   }
+
+   await Tasks.update({
+     _id:req.body.id
+   },{
+    completed:true
+   })
+   res.json({
+    msg:"Task updated successfully"
+   })
 
 })
 
-app.delete("/deleteTask", (req, res) => {
-
-})
-
-
-module.exports = {
-    JWT_Secret
-}
 app.listen(3000);

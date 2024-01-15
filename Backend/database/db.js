@@ -5,7 +5,7 @@ mongoose.connect("");
 const taskSchema = new mongoose.Schema({
     title:String,
     description:String,
-    deadline:Date
+    completed:Boolean
 })
 const userSchema = new mongoose.Schema({
     username:String,
